@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.27;
+pragma solidity ^0.8.27;
 
 import {Token} from "./Token.sol";
 
@@ -55,10 +55,8 @@ contract Factory {
 
         Token token = new Token(msg.sender, _name, _symbol, 1_000_000 ether);
 
-        // Store token address
         tokens.push(address(token));
 
-        // Increment total tokens
         totalTokens++;
 
         // Create the sale.
@@ -71,7 +69,7 @@ contract Factory {
             true
         );
 
-        // Save the sale to mapping.
+        //  sale to mapping.
         tokenToSale[address(token)] = sale;
 
         emit Created(address(token));
@@ -87,17 +85,14 @@ contract Factory {
         // Calculate the price of 1 token based on the total bought.
         uint256 cost = getCost(sale.sold);
 
-        // Determine the total price for X amount.
         uint256 price = cost * (_amount / 10 ** 18);
 
-        // Check to ensure enough ETH is sent.
         require(msg.value >= price, "Factory: Insufficient ETH received");
 
-        // Update contract states.
         sale.sold += _amount;
         sale.raised += price;
 
-        // If we have reached our ETH goal OR buy limit, stop allowing buys.
+        // If reached  goal OR limit, stop allowing buys.
         if (sale.sold >= TOKEN_LIMIT || sale.raised >= TARGET) {
             sale.isOpen = false;
         }
@@ -109,10 +104,10 @@ contract Factory {
     }
 
     function deposit(address _token) external {
-        // The remaining token balance and the ETH raised
-        // would go into a liquidity pool like Uniswap V3.
-        // For simplicity we'll just transfer remaining
-        // tokens and ETH raised to the creator.
+        /* The remaining token balance and the ETH raised
+         would go into a liquidity pool like Uniswap V3.
+         For simplicity we'll just transfer remaining
+         tokens and ETH raised to the creator.*/
 
         Token token = Token(_token);
         TokenSale memory sale = tokenToSale[_token];

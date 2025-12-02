@@ -3,13 +3,11 @@
 import { useEffect, useState } from "react"
 import { ethers } from 'ethers'
 
-// Components
+
 import Header from "./components/Header"
 import List from "./components/List"
 import Token from "./components/Token"
 import Trade from "./components/Trade"
-
-// ABIs & Config
 import Factory from "./abis/Factory.json"
 import config from "./config.json"
 import images from "./images.json"
@@ -34,14 +32,12 @@ export default function Home() {
   }
 
   async function loadBlockchainData() {
-    // Use MetaMask for our connection
+    // Use wallet for our connection
     const provider = new ethers.BrowserProvider(window.ethereum)
     setProvider(provider)
 
-    // Get the current network
     const network = await provider.getNetwork()
 
-    // Create reference to Factory contract
     const factory = new ethers.Contract(config[network.chainId].factory.address, Factory, provider)
     setFactory(factory)
 
@@ -49,11 +45,10 @@ export default function Home() {
     const fee = await factory.fee()
     setFee(fee)
 
-    // Prepare to fetch token details
     const totalTokens = await factory.totalTokens()
     const tokens = []
 
-    // We'll get the first 6 tokens listed
+    // first 6 tokens listed
     for (let i = 0; i < totalTokens; i++) {
       if (i == 6) {
         break
@@ -76,7 +71,6 @@ export default function Home() {
       tokens.push(token)
     }
 
-    // We reverse the array so we can get the most
     // recent token listed to display first
     setTokens(tokens.reverse())
   }
